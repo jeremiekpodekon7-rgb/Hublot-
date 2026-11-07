@@ -1,0 +1,39 @@
+name: COSMOS checks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  core-tests:
+    name: Portable core tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Run core tests
+        run: make test
+
+  gba-rom:
+    name: Build GBA ROM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Build with official devkitARM container
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            devkitpro/devkitarm:20260610 \
+            sh -lc 'make clean && make -j2'
+      - name: Upload ROM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosmos-gba-rom
+          path: cosmos.gba
+          if-no-files-found: error

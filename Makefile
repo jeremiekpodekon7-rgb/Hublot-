@@ -1,73 +1,56 @@
 ####################
-# main configuration
+# COSMOS GBA build
 ####################
-PROGRAM   := helloworld
+PROGRAM    := cosmos
+TITLE      := COSMOS
+GAME_CODE  := CSMS
+MAKER_CODE := 00
+REVISION   := 0
 
 INC_DIR   := include
 SRC_DIR   := src
 BUILD_DIR := build
 
-CFLAGS	  := -O2 -Wall -Wextra -flto -I $(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork
-CXXFLAGS  := -O2 -Wall -Wextra -flto -I $(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork -fno-exceptions -fno-rtti -fpermissive
-LDFLAGS   := -Wl,-Map=$(PROGRAM).map --specs=nano.specs --specs=nosys.specs
+CFLAGS   := -O2 -Wall -Wextra -Werror -I$(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork
+CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra -Werror -I$(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork -fno-exceptions -fno-rtti
+LDFLAGS  := -Wl,-Map=$(PROGRAM).map --specs=nano.specs --specs=nosys.specs
 
-UART_DEV  := /dev/ttyUSB0
+LIBGBA          := libgba
+LIBGBA_INC      := $(LIBGBA)/include
+LIBGBA_FLAGS    := -I$(LIBGBA_INC)
+LIBGBA_LDFLAGS  := -L$(LIBGBA)/lib -lgba -nostartfiles $(LIBGBA)/gba_crt0.o -Wl,-T,$(LIBGBA)/gba_cart.ld
+CFLAGS   += $(LIBGBA_FLAGS)
+CXXFLAGS += $(LIBGBA_FLAGS)
 
-#########################
-# game header information
-#########################
-TITLE		:= helloworld
-GAME_CODE   := EAAE
-MAKER_CODE  := 01
-REVISION    := 0
-
-
-######################
-# libgba configuration
-######################
-LIBGBA     := libgba
-LIBGBA_INC := $(LIBGBA)/include
-LIBGBA_FLAGS := -I $(LIBGBA_INC)
-LIBGBA_LDFLAGS := -L $(LIBGBA)/lib -lgba -nostartfiles $(LIBGBA)/gba_crt0.o -Wl,-T,$(LIBGBA)/gba_cart.ld
-CFLAGS   := $(CFLAGS) $(LIBGBA_FLAGS)
-CXXFLAGS := $(CXXFLAGS) $(LIBGBA_FLAGS)
-
-###################
-# compilation paths
-###################
-C_BUILD_DIR := $(BUILD_DIR)/c
-C_SRCS := $(shell find src/ -type f -name '*.c')
-C_OBJS := $(patsubst %.c,$(C_BUILD_DIR)/%.o,$(C_SRCS))
-
+C_BUILD_DIR   := $(BUILD_DIR)/c
 CXX_BUILD_DIR := $(BUILD_DIR)/cxx
-CXX_SRCS := $(shell find src/ -type f -name '*.cpp')
-CXX_OBJS := $(patsubst %.cpp,$(CXX_BUILD_DIR)/%.o,$(CXX_SRCS))
-
 ASM_BUILD_DIR := $(BUILD_DIR)/asm
-ASM_SRCS := $(shell find src/ -type f -name '*.s')
+
+C_SRCS   := $(shell find $(SRC_DIR)/ -type f -name '*.c')
+CXX_SRCS := $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
+ASM_SRCS := $(shell find $(SRC_DIR)/ -type f -name '*.s')
+
+C_OBJS   := $(patsubst %.c,$(C_BUILD_DIR)/%.o,$(C_SRCS))
+CXX_OBJS := $(patsubst %.cpp,$(CXX_BUILD_DIR)/%.o,$(CXX_SRCS))
 ASM_OBJS := $(patsubst %.s,$(ASM_BUILD_DIR)/%.o,$(ASM_SRCS))
+OBJS     := $(C_OBJS) $(CXX_OBJS) $(ASM_OBJS)
 
-OBJS := $(C_OBJS) $(CXX_OBJS) $(ASM_OBJS)
-
-###########
-# toolchain
-###########
 PREF    := arm-none-eabi-
 AS      := $(PREF)as
 CC      := $(PREF)gcc
 CXX     := $(PREF)g++
 LD      := $(CXX)
 OBJCOPY := $(PREF)objcopy
+HOST_CXX ?= c++
 
-###################
-# compilation rules
-###################
-.PHONY: all clean flash devstat $(LIBGBA)
+CORE_SOURCES := src/core/portal.cpp src/core/world_clock.cpp
+HOST_TEST    := $(BUILD_DIR)/host/core_tests
+
+.PHONY: all clean test
 all: $(PROGRAM).gba
 
 clean:
-	rm -rf $(PROGRAM).gba $(PROGRAM).elf build/*
-	make -C $(LIBGBA) clean
+	rm -rf $(PROGRAM).gba $(PROGRAM).elf $(PROGRAM).map $(BUILD_DIR)
 
 $(PROGRAM).gba: $(PROGRAM).elf
 	$(OBJCOPY) -O binary $< $@
@@ -87,3 +70,10 @@ $(CXX_BUILD_DIR)/%.o: %.cpp
 $(ASM_BUILD_DIR)/%.o: %.s
 	@mkdir -p $(dir $@)
 	$(AS) -o $@ $<
+
+$(HOST_TEST): $(CORE_SOURCES) tests/core_tests.cpp include/cosmos/isometric.hpp include/cosmos/portal.hpp include/cosmos/world_clock.hpp
+	@mkdir -p $(dir $@)
+	$(HOST_CXX) -std=c++17 -O2 -Wall -Wextra -Werror -pedantic -I$(INC_DIR) $(CORE_SOURCES) tests/core_tests.cpp -o $@
+
+test: $(HOST_TEST)
+	./$(HOST_TEST)
