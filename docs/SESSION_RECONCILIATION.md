@@ -22,6 +22,12 @@ Those ideas are valuable historical context, but they are **not automatically CO
 
 The repository `MOMO-RPG-Engine` is likewise an Android Java RPG engine, not the source base for COSMOS.
 
+### Earlier GBA ecosystem prototype
+
+The Library archive `verdant-gba-project.zip` and Git bundle contain a separate native GBA prototype called **Verdant**. Its source models a small ecosystem of plants, grazers and predators with deterministic seeds and rain events. Its archived ROM header identifies it as `VERDANT`; it is not a COSMOS build. The archive's own report says the ROM was not playtested in an emulator or on physical hardware.
+
+The ecosystem concept is relevant to COSMOS's approved living-environment direction. The portable logic has therefore been **reimplemented in COSMOS C++**, rather than importing Verdant's GBA renderer or copying its source files. The COSMOS version adds snapshot/double-buffer updates so a creature moved to a later cell is not processed a second time during the same simulation tick. The initial patch is deliberately bounded to 15×10 logical cells and a 512-byte state budget. This is a local ecology prototype, not a claim of a complete ecosystem or full fauna simulation.
+
 The THEOS-0 / GENESIS / THEOS Fantasy SDF research projects are also separate digital-simulation projects. Their code, SDF engine, physics model, ThetaB2 controller, and AI systems are not part of COSMOS.
 
 Earlier Eclypsia and other RPG concept images are reference material from different projects, not COSMOS asset approvals.
@@ -64,7 +70,7 @@ The following decisions are the current COSMOS contract:
 - 2:1 isometric projection; logical ground cell 32×16 pixels; hardware tiles 8×8.
 - Standard humanoid target 32×40 pixels, with eight directions and 4–8 frames for ordinary actions.
 - Camera scrolling follows the player; cinematic reframing is used for important events.
-- Living environments, animated effects, reactive terrain, regional palettes, simulated localized lighting, and readable tactical overlays.
+- Living environments, animated effects, reactive terrain, regional palettes, simulated localized lighting, ecosystem updates, and readable tactical overlays.
 - Authored regions combined with reusable modules; procedural recomposition only where useful; chunked loading.
 - Day/night, weather, cosmic atmospheric events, and portal transitions belong to the world model. Their final timings and gameplay effects remain to be balanced.
 
@@ -99,6 +105,7 @@ A cosmic or multi-world feeling can be delivered through carefully designed regi
 - Save format, slot count, save triggers, and death/recovery rules.
 - Whether acquired knowledge or universal skill progress can be shared between party members.
 - The exact lifecycle policy for environment animations and persistent reactions.
+- Whether to expand the ecology patch with additional plants, food webs, terrain interactions, or regional species after defining their hardware budgets.
 - Any adoption of a fairy companion, shadow/summon system, title collection, crafting volume, or NPC simulation from separate RPG notes. These require an explicit COSMOS design decision and a GBA feasibility review.
 
 ## 6. Implementation authority
@@ -107,4 +114,4 @@ The active implementation owner is this branch:
 
 `feature/cosmos-gba-foundation`
 
-The original `master` branch remains the preserved GBA template. The current code foundation is deliberately small: projection math, portal lifecycle, world clock/weather state, a temporary GBA test scene, host-side tests, and CI. This document does not claim that exploration, combat, story, assets, saves, or the complete game have been implemented.
+The original `master` branch remains the preserved GBA template. The current code foundation is deliberately small: projection math, portal lifecycle, world clock/weather state, a bounded ecological patch, a temporary GBA test scene, host-side tests, and CI. This document does not claim that exploration, combat, story, assets, saves, or the complete game have been implemented.
