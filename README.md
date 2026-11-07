@@ -52,8 +52,9 @@ The CI workflow runs the host tests and builds the GBA ROM inside the official `
 
 ## Documentation
 
-- `docs/PROJECT_SPEC.md` — consolidated design decisions from the COSMOS sessions.
-- `docs/GRAPHICS_SPEC.md` — approved visual direction and GBA graphics constraints.
+- `docs/PROJECT_SPEC.md` — consolidated gameplay and platform decisions.
+- `docs/GRAPHICS_SPEC.md` — visual direction and GBA graphics constraints.
+- `docs/SESSION_RECONCILIATION.md` — cross-session history, accepted decisions, and boundaries with separate RPG projects.
 - `docs/ARCHITECTURE.md` — implementation boundaries and build stages.
 
 ## License note
