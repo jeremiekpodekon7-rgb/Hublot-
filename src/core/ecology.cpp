@@ -88,7 +88,7 @@ void Ecosystem::step() noexcept {
                     result=EcosystemCell{CellKind::Grass,0,0}; continue;
                 }
                 if(kind==CellKind::Grass && next[target].kind==CellKind::Grass && roll<30U) {
-                    next[target]=EcosystemCell{CellKind::Grazer,energy>2U?energy:3U,0};
+                    next[target]=EcosystemCell{CellKind::Grazer,static_cast<std::uint8_t>(energy>2U?energy:3U),0};
                     result=EcosystemCell{CellKind::Grass,0,0}; continue;
                 }
             }
