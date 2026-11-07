@@ -68,3 +68,8 @@ Conditional effects and caps must be documented separately rather than hidden in
 - Portal activation, discovery, and travel-network policy.
 - Real-time duration of a day, weather frequency, and weather gameplay modifiers.
 - Save-slot count, save triggers, and data layout.
+
+
+## Cross-session continuity
+
+The original cosmic-Wakfu-inspired RPG direction and the later COSMOS mechanics/graphics studies are reconciled in [SESSION_RECONCILIATION.md](SESSION_RECONCILIATION.md). That record separates direct COSMOS decisions from historical notes belonging to other RPG and simulation projects. Do not silently import Android/Godot, SDF, shadow-extraction, ATB, or oversized planetary-world requirements from those separate projects.
