@@ -50,6 +50,7 @@ Conditional effects and caps must be documented separately rather than hidden in
 - Regions are assembled from manually designed layouts and reusable modular tiles/objects. Procedural recomposition is used only where it adds value.
 - Large regions are divided into chunks and loaded progressively.
 - The environment combines cyclical animation, event-driven reactions, and persistent evolution.
+- A first bounded ecological patch now models plants, grazers and predators across 15×10 logical cells, with deterministic seeded updates and rainfall. It is a local prototype, not a full flora/fauna simulation or a claim that every biome is populated.
 - Day/night and weather are part of the world model. Weather types may include rain, fog, snow, storms, and cosmic phenomena. Exact durations and gameplay effects remain to be balanced.
 - Portal interaction/discovery rules remain unresolved. The initial code models the portal lifecycle without choosing whether every portal is freely traversable, interactively activated, or part of a wider network.
 
