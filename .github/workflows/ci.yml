@@ -30,7 +30,7 @@ jobs:
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             devkitpro/devkitarm:20260610 \
-            sh -lc 'make clean && make -j2'
+            sh -lc 'export DEVKITPRO=/opt/devkitpro; export DEVKITARM="$DEVKITPRO/devkitARM"; export PATH="$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH"; command -v arm-none-eabi-g++; command -v gbafix; make clean && make -j2'
       - name: Upload ROM artifact
         uses: actions/upload-artifact@v4
         with:
