@@ -10,6 +10,7 @@ COSMOS is being built as an offline-playable `.gba` ROM for real GBA hardware an
 - [x] 2:1 isometric projection and continuous fixed-point coordinates
 - [x] Initial portal lifecycle state machine
 - [x] Deterministic day/night and weather clock foundation
+- [x] Deterministic local ecosystem patch (15×10 logical cells)
 - [x] Host-side tests for the platform-independent core
 - [x] GBA build workflow
 - [ ] Exploration movement and collision
