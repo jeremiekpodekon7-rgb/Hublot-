@@ -12,7 +12,9 @@ SRC_DIR   := src
 BUILD_DIR := build
 
 CFLAGS   := -O2 -Wall -Wextra -Werror -I$(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork
-CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra -Werror -I$(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork -fno-exceptions -fno-rtti
+# libgba ships legacy headers that use the removed C++ register keyword.
+# Keep -Werror for project code while not treating that third-party warning as fatal.
+CXXFLAGS := -std=gnu++17 -O2 -Wall -Wextra -Werror -Wno-error=register -I$(INC_DIR) -mcpu=arm7tdmi -mthumb -mthumb-interwork -fno-exceptions -fno-rtti
 LDFLAGS  := -Wl,-Map=$(PROGRAM).map --specs=nano.specs --specs=nosys.specs
 
 LIBGBA          := libgba
