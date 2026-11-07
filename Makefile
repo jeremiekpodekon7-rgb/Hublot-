@@ -45,8 +45,9 @@ LD      := $(CXX)
 OBJCOPY := $(PREF)objcopy
 HOST_CXX ?= c++
 
-CORE_SOURCES := src/core/portal.cpp src/core/world_clock.cpp
+CORE_SOURCES := src/core/portal.cpp src/core/world_clock.cpp src/core/ecology.cpp
 HOST_TEST    := $(BUILD_DIR)/host/core_tests
+ECOLOGY_TEST := $(BUILD_DIR)/host/ecology_tests
 
 .PHONY: all clean test
 all: $(PROGRAM).gba
@@ -77,5 +78,10 @@ $(HOST_TEST): $(CORE_SOURCES) tests/core_tests.cpp include/cosmos/isometric.hpp 
 	@mkdir -p $(dir $@)
 	$(HOST_CXX) -std=c++17 -O2 -Wall -Wextra -Werror -pedantic -I$(INC_DIR) $(CORE_SOURCES) tests/core_tests.cpp -o $@
 
-test: $(HOST_TEST)
+$(ECOLOGY_TEST): src/core/ecology.cpp tests/ecology_tests.cpp include/cosmos/ecology.hpp
+	@mkdir -p $(dir $@)
+	$(HOST_CXX) -std=c++17 -O2 -Wall -Wextra -Werror -pedantic -I$(INC_DIR) src/core/ecology.cpp tests/ecology_tests.cpp -o $@
+
+test: $(HOST_TEST) $(ECOLOGY_TEST)
 	./$(HOST_TEST)
+	./$(ECOLOGY_TEST)
